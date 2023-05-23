@@ -1,0 +1,32 @@
+version: '3.8'
+
+services:
+  bitmart:
+    build: .
+    image: cryptostore
+    environment:
+      - EXCHANGE=BITMART
+      - CHANNELS=l2_book,trades
+      - SYMBOLS=BTC-USDT,ETH-USDT
+      - SNAPSHOT_ONLY=true
+      - BACKEND=MONGO
+      - HOST=mongodb
+      - PORT=27017
+      - DATABASE=bitmart
+    depends_on:
+      - mongodb
+
+  mongodb:
+    image: mongo:6-jammy
+    container_name: mongo
+    ports:
+      - '27018:27017'
+    volumes:
+      - mongodb-data:/data/db
+
+volumes:
+  mongodb-data:
+
+networks:
+  default:
+    driver: bridge
