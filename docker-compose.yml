@@ -9,7 +9,7 @@ services:
       - CHANNELS=l2_book,trades
       - SYMBOLS=BTC-USDT,ETH-USDT
       - SNAPSHOT_ONLY=true
-      - BACKEND=MONGO
+      - BACKEND=MONGO_EXT
       - HOST=mongodb
       - PORT=27017
       - DATABASE=bitmart
