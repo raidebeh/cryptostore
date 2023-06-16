@@ -13,6 +13,7 @@ from cryptofeed.defines import L2_BOOK, TICKER, TRADES, FUNDING, CANDLES, OPEN_I
 from cryptofeed.backends.redis import BookRedis, TradeRedis, TickerRedis, FundingRedis, CandlesRedis, OpenInterestRedis, LiquidationsRedis
 from cryptofeed.backends.redis import BookStream, TradeStream, TickerStream, FundingStream, CandlesStream, OpenInterestStream, LiquidationsStream
 from cryptofeed.backends.mongo import BookMongo, TradeMongo, TickerMongo, FundingMongo, CandlesMongo, OpenInterestMongo, LiquidationsMongo
+from cryptofeed.backends.mongo_ext import BookSecondSampledMongo
 from cryptofeed.backends.postgres import BookPostgres, TradePostgres, TickerPostgres, FundingPostgres, CandlesPostgres, OpenInterestPostgres, LiquidationsPostgres
 from cryptofeed.backends.socket import BookSocket, TradeSocket, TickerSocket, FundingSocket, CandlesSocket, OpenInterestSocket, LiquidationsSocket
 from cryptofeed.backends.influxdb import BookInflux, TradeInflux, TickerInflux, FundingInflux, CandlesInflux, OpenInterestInflux, LiquidationsInflux
@@ -78,6 +79,17 @@ def load_config() -> Feed:
         kwargs = {'host': host, 'port': port if port else 27101}
         cbs = {
             L2_BOOK: BookMongo(database, snapshot_interval=snap_interval, snapshots_only=snap_only, **kwargs),
+            TRADES: TradeMongo(database, **kwargs),
+            TICKER: TickerMongo(database, **kwargs),
+            FUNDING: FundingMongo(database, **kwargs),
+            CANDLES: CandlesMongo(database, **kwargs),
+            OPEN_INTEREST: OpenInterestMongo(database, **kwargs),
+            LIQUIDATIONS: LiquidationsMongo(database, **kwargs)
+        }
+    elif backend == 'MONGO_EXT':
+        kwargs = {'host': host, 'port': port if port else 27101}
+        cbs = {
+            L2_BOOK: BookSecondSampledMongo(database, **kwargs),
             TRADES: TradeMongo(database, **kwargs),
             TICKER: TickerMongo(database, **kwargs),
             FUNDING: FundingMongo(database, **kwargs),
